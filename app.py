@@ -33,7 +33,7 @@ def create_user():
 @app.route('/users/<int:user_id>/movies')
 def get_movies(user_id):
     movies = data_manager.get_movies(user_id)
-    return render_template('movies.html', movies=movies)
+    return render_template('movies.html', movies=movies, user_id=user_id)
 
 @app.route('/users/<int:user_id>/movies', methods=['POST'])
 def add_movie(user_id):
