@@ -40,6 +40,10 @@ def add_movie(user_id):
     title = request.form.get('name')
     response = requests.get(f"http://www.omdbapi.com/?t={title}&apikey={api_key}")
     data = response.json()
+
+    if data['Response'] == 'False':
+        return render_template('404.html'), 404
+
     movie = Movie(
         name=data['Title'],
         director=data['Director'],
@@ -60,6 +64,10 @@ def update_movie(user_id, movie_id):
 def delete_movie(user_id, movie_id):
     data_manager.delete_movie(movie_id)
     return redirect(url_for('get_movies', user_id=user_id))
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 if __name__ == '__main__':
   with app.app_context():
