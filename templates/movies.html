@@ -6,18 +6,18 @@
     {% for movie in movies %}
     <li class="movie-entry">
         <form action="{{ url_for('delete_movie', user_id=movie.user_id, movie_id=movie.id) }}" method="post">
-            <button type="submit">Delete Movie</button>
+            <button type="submit" class="btn btn-danger">Delete Movie</button>
         </form>
         <form action="{{ url_for('update_movie', user_id=movie.user_id, movie_id=movie.id) }}" method="post">
-            <input name="name">
-            <button type="submit">Update Movie</button>
+            <input name="name" class="form-control">
+            <button type="submit" class="btn btn-warning">Update Movie</button>
         </form>
         {{ movie.name }}
     </li>
     {% endfor %}
 </ul>
 <form action="{{ url_for('add_movie', user_id=user_id) }}" method="post">
-    <input name="name">
-    <button type="submit">Add Movie</button>
+    <input name="name" class="form-control">
+    <button type="submit" class="btn btn-primary">Add Movie</button>
 </form>
 {% endblock %}
