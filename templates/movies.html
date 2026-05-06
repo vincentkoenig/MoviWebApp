@@ -9,13 +9,14 @@
             <button type="submit">Delete Movie</button>
         </form>
         <form action="{{ url_for('update_movie', user_id=movie.user_id, movie_id=movie.id) }}" method="post">
+            <input name="name">
             <button type="submit">Update Movie</button>
         </form>
         {{ movie.name }}
     </li>
     {% endfor %}
 </ul>
-<form action="{{ url_for('add_movie', user_id=???) }}" method="post">
+<form action="{{ url_for('add_movie', user_id=user_id) }}" method="post">
     <input name="name">
     <button type="submit">Add Movie</button>
 </form>
