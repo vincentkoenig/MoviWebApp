@@ -27,8 +27,11 @@ def index():
 @app.route('/users', methods=['POST'])
 def create_user():
     name = request.form.get('name')
-    data_manager.create_user(name)
-    return redirect(url_for('index'))
+    if name.strip() == "":
+        return "Name is empty"
+    else:
+        data_manager.create_user(name)
+        return redirect(url_for('index'))
 
 @app.route('/users/<int:user_id>/movies')
 def get_movies(user_id):
@@ -37,9 +40,16 @@ def get_movies(user_id):
 
 @app.route('/users/<int:user_id>/movies', methods=['POST'])
 def add_movie(user_id):
+    user = data_manager.get_user(user_id)
+    if user is None:
+        return "User not found", 404
+
     title = request.form.get('name')
-    response = requests.get(f"http://www.omdbapi.com/?t={title}&apikey={api_key}")
-    data = response.json()
+    try:
+        response = requests.get(f"http://www.omdbapi.com/?t={title}&apikey={api_key}")
+        data = response.json()
+    except Exception as e:
+        return "Could not reach movie database", 500
 
     if data['Response'] == 'False':
         return render_template('404.html'), 404
@@ -56,8 +66,10 @@ def add_movie(user_id):
 
 @app.route('/users/<int:user_id>/movies/<int:movie_id>/update', methods=['POST'])
 def update_movie(user_id, movie_id):
-    title = request.form.get('name')
-    data_manager.update_movie(movie_id, title)
+    title = request.form.get('title')
+    director = request.form.get('director')
+    year = request.form.get('year')
+    data_manager.update_movie(movie_id, title, director, year)
     return redirect(url_for('get_movies', user_id=user_id))
 
 @app.route('/users/<int:user_id>/movies/<int:movie_id>/delete', methods=['POST'])
@@ -68,6 +80,10 @@ def delete_movie(user_id, movie_id):
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('500.html'), 500
 
 if __name__ == '__main__':
   with app.app_context():
